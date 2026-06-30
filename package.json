@@ -1,39 +1,34 @@
 {
   "name": "@golproductions/check-mcp",
-  "version": "1.0.1",
-  "description": "MCP server for Check — the anti-hallucination firewall for AI agents. Validates commands, imports, and function calls before execution.",
+  "version": "1.3.3",
+  "description": "Instead of tweaking your prompts to make an AI agent better, just use Check. Validates every command before execution. Instantly saves compute cost on failed retries.",
   "bin": {
-    "check-mcp": "mcp.js"
+    "check-mcp": "src/index.js"
   },
   "type": "module",
   "engines": {
     "node": ">=18"
   },
   "files": [
-    "mcp.js",
-    "LICENSE",
-    "README.md"
+    "src/",
+    "LICENSE"
   ],
   "keywords": [
     "mcp",
     "model-context-protocol",
-    "anti-hallucination",
-    "ai-firewall",
+    "preflight",
     "command-validation",
-    "ai-agents",
-    "claude-code",
-    "cursor",
-    "windsurf",
-    "devin-desktop"
+    "deterministic",
+    "ai-agents"
   ],
-  "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.12.0",
-    "zod": "^3.24.0"
-  },
   "license": "SEE LICENSE IN LICENSE",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/golproductions/check-mcp.git"
   },
-  "homepage": "https://www.golproductions.com/check.html"
+  "homepage": "https://www.golproductions.com/check.html",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "zod": "^3.24.0"
+  }
 }

@@ -2,26 +2,24 @@ GOL Productions Proprietary License
 
 Copyright (c) 2026 GOL Productions. All rights reserved.
 
-This software is the proprietary product of GOL Productions
-("GOL"). It is licensed, not sold.
+This software is provided for use exclusively with the Check API
+operated by GOL Productions (https://www.golproductions.com).
 
-GRANT OF LICENSE. GOL grants you a limited, non-exclusive,
-non-transferable, revocable licence to use this software
-exclusively with GOL's Check API service.
+Permission is granted to install, execute, and use this software
+solely in connection with the Check API service. No other use is
+permitted.
 
-RESTRICTIONS. You may not:
-  1. Copy, modify, or create derivative works of this software.
-  2. Redistribute, sublicense, sell, or otherwise transfer this
-     software to any third party.
-  3. Use this software with any competing command-validation or
-     preflight service.
-  4. Reverse-engineer, decompile, or disassemble this software.
+You may NOT:
+  - Copy, modify, merge, or create derivative works of this software
+  - Redistribute, sublicense, sell, or otherwise transfer this software
+  - Use this software, in whole or in part, to operate or connect to
+    any competing command-validation service
+  - Reverse-engineer the protocols or logic used by this software
+  - Remove or alter any copyright or proprietary notices
 
-TERMINATION. This licence terminates immediately if you breach
-any of its terms or if GOL revokes it at its discretion.
+THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED. IN NO EVENT SHALL GOL PRODUCTIONS BE LIABLE FOR
+ANY CLAIM, DAMAGES, OR OTHER LIABILITY ARISING FROM THE USE OF THIS
+SOFTWARE.
 
-DISCLAIMER. THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY
-OF ANY KIND. GOL DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED.
-
-GOVERNING LAW. This licence is governed by the laws of the
-State of Victoria, Australia.
+For licensing enquiries: hello@golproductions.com
