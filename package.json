@@ -1,6 +1,6 @@
 {
   "name": "@golproductions/check-mcp",
-  "version": "1.3.3",
+  "version": "1.3.4",
   "description": "Instead of tweaking your prompts to make an AI agent better, just use Check. Validates every command before execution. Instantly saves compute cost on failed retries.",
   "bin": {
     "check-mcp": "src/index.js"

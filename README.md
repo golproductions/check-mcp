@@ -5,6 +5,8 @@
 
 MCP server for [Check](https://www.golproductions.com/check.html) — a command firewall for AI agents. Validates every shell command before execution. Sub-100ms. Runnable or invalid.
 
+A free key is minted automatically on first run. No signup, no key to paste.
+
 ## Install
 
 ### Cursor
@@ -15,8 +17,7 @@ MCP server for [Check](https://www.golproductions.com/check.html) — a command 
   "mcpServers": {
     "Check": {
       "command": "npx",
-      "args": ["@golproductions/check-mcp"],
-      "env": { "GOL_CLIENT_ID": "your_key" }
+      "args": ["@golproductions/check-mcp"]
     }
   }
 }
@@ -30,35 +31,25 @@ MCP server for [Check](https://www.golproductions.com/check.html) — a command 
   "mcpServers": {
     "Check": {
       "command": "npx",
-      "args": ["@golproductions/check-mcp"],
-      "env": { "GOL_CLIENT_ID": "your_key" }
+      "args": ["@golproductions/check-mcp"]
     }
   }
 }
 ```
 
-### Claude Code
-
-For Claude Code, use the firewall hook instead — it validates every command automatically:
+The server activates a free key on first run. To reuse an existing Client ID across machines, add it under `env`:
 
 ```json
-// .claude/settings.json
-{
-  "hooks": {
-    "PreToolUse": [{
-      "matcher": "Bash",
-      "hooks": [{
-        "type": "command",
-        "command": "npx",
-        "args": ["@golproductions/check-firewall"]
-      }]
-    }]
-  },
-  "env": { "GOL_CLIENT_ID": "your_key" }
-}
+"env": { "GOL_CLIENT_ID": "your_key" }
 ```
 
-Get your API key at [golproductions.com](https://www.golproductions.com/check.html). 80 free checks on sign-up.
+### Claude Code
+
+For Claude Code, use the installer instead — it wires up the hook that validates every command automatically:
+
+```
+npx @golproductions/check --install
+```
 
 ## Tools
 
@@ -89,7 +80,7 @@ Output: (command output)
 
 ## Pricing
 
-$0.0068 AUD per check. 80 free on sign-up. No subscriptions.
+120 free checks every day. After that, $0.0068 AUD per check. No subscriptions. Credits never expire.
 
 ## License
 

@@ -34,7 +34,7 @@ async function mintInstantKey() {
   try {
     const res = await fetch(INSTANT_API, {
       method: "POST",
-      headers: { "Content-Type": "application/json", "User-Agent": "check-mcp/1.3.3" },
+      headers: { "Content-Type": "application/json", "User-Agent": "check-mcp/1.3.4" },
       body: JSON.stringify({ fingerprint: deviceFingerprint(), channel: CHANNEL }),
     });
     if (!res.ok) return "";
@@ -133,7 +133,7 @@ async function isInstalledLocally(cmd) {
 
 const server = new McpServer({
   name: "check",
-  version: "1.3.3",
+  version: "1.3.4",
 });
 
 server.tool(
@@ -170,7 +170,7 @@ server.tool(
         headers: {
           "Content-Type": "application/json",
           "X-GOL-CLIENT-ID": CLIENT_ID,
-          "User-Agent": "check-mcp/1.3.3",
+          "User-Agent": "check-mcp/1.3.4",
         },
         body: JSON.stringify(payload),
       });
@@ -238,7 +238,7 @@ server.tool(
         headers: {
           "Content-Type": "application/json",
           "X-GOL-CLIENT-ID": CLIENT_ID,
-          "User-Agent": "check-mcp/1.3.3",
+          "User-Agent": "check-mcp/1.3.4",
         },
         body: JSON.stringify(payload),
       });
