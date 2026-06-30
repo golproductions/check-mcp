@@ -37,6 +37,53 @@ A free key is minted automatically on first run. No signup, no key to paste.
 }
 ```
 
+### Claude Desktop
+
+```json
+// claude_desktop_config.json
+{
+  "mcpServers": {
+    "Check": {
+      "command": "npx",
+      "args": ["@golproductions/check-mcp"]
+    }
+  }
+}
+```
+
+### VS Code
+
+```json
+// .vscode/mcp.json
+{
+  "servers": {
+    "Check": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["@golproductions/check-mcp"]
+    }
+  }
+}
+```
+
+### Cline
+
+```json
+// cline_mcp_settings.json
+{
+  "mcpServers": {
+    "Check": {
+      "command": "npx",
+      "args": ["@golproductions/check-mcp"]
+    }
+  }
+}
+```
+
+### Any other MCP client
+
+Point it at the same command: `npx @golproductions/check-mcp`. Stdio transport, no other setup.
+
 The server activates a free key on first run. To reuse an existing Client ID across machines, add it under `env`:
 
 ```json

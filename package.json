@@ -6,6 +6,10 @@
     "check-mcp": "src/index.js"
   },
   "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "smoke": "node --check src/index.js"
+  },
   "engines": {
     "node": ">=18"
   },

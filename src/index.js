@@ -10,12 +10,23 @@ import { createHash } from "node:crypto";
 import { hostname, userInfo, platform as osPlatform, arch as osArch, homedir } from "node:os";
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
+import { createRequire } from "node:module";
+import { fileURLToPath } from "node:url";
 
 const execFileAsync = promisify(execFile);
 
+// Single source of truth for the version. The release workflow bumps package.json
+// from the git tag; reading it here means the server, the User-Agent, and the
+// published version can never drift apart again.
+const require = createRequire(import.meta.url);
+const { version: VERSION } = require("../package.json");
+
 const CHECK_API = "https://triage.golproductions.com/preflight";
 const INSTANT_API = "https://triage.golproductions.com/instant-key";
-const CHANNEL = "glama";
+// Attribution tag sent to the API so installs can be told apart by surface.
+// Defaults to "npm" (this is the npm package); a listing that re-distributes it
+// — Glama, Smithery — sets GOL_CHANNEL in its launch config to claim its own.
+const CHANNEL = process.env.GOL_CHANNEL || "npm";
 const IS_WIN = process.platform === "win32";
 const KEY_FILE = join(homedir(), ".check", "client-id");
 
@@ -34,7 +45,7 @@ async function mintInstantKey() {
   try {
     const res = await fetch(INSTANT_API, {
       method: "POST",
-      headers: { "Content-Type": "application/json", "User-Agent": "check-mcp/1.3.4" },
+      headers: { "Content-Type": "application/json", "User-Agent": `check-mcp/${VERSION}` },
       body: JSON.stringify({ fingerprint: deviceFingerprint(), channel: CHANNEL }),
     });
     if (!res.ok) return "";
@@ -133,7 +144,7 @@ async function isInstalledLocally(cmd) {
 
 const server = new McpServer({
   name: "check",
-  version: "1.3.4",
+  version: VERSION,
 });
 
 server.tool(
@@ -170,7 +181,7 @@ server.tool(
         headers: {
           "Content-Type": "application/json",
           "X-GOL-CLIENT-ID": CLIENT_ID,
-          "User-Agent": "check-mcp/1.3.4",
+          "User-Agent": `check-mcp/${VERSION}`,
         },
         body: JSON.stringify(payload),
       });
@@ -238,7 +249,7 @@ server.tool(
         headers: {
           "Content-Type": "application/json",
           "X-GOL-CLIENT-ID": CLIENT_ID,
-          "User-Agent": "check-mcp/1.3.4",
+          "User-Agent": `check-mcp/${VERSION}`,
         },
         body: JSON.stringify(payload),
       });
@@ -284,11 +295,22 @@ server.tool(
 );
 
 // Resolve the key (env, saved, or mint instantly) before serving. No signup.
-CLIENT_ID = await resolveClientId();
-if (!CLIENT_ID) {
-  process.stderr.write("check-mcp: could not activate. Set GOL_CLIENT_ID, or check your connection.\n");
-  process.exit(1);
+async function main() {
+  CLIENT_ID = await resolveClientId();
+  if (!CLIENT_ID) {
+    process.stderr.write("check-mcp: could not activate. Set GOL_CLIENT_ID, or check your connection.\n");
+    process.exit(1);
+  }
+
+  const transport = new StdioServerTransport();
+  await server.connect(transport);
 }
 
-const transport = new StdioServerTransport();
-await server.connect(transport);
+// Boot the server only when run directly (npx / bin). When the module is imported
+// — as the test suite does — the parsing logic loads without opening a transport
+// or touching the network.
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  await main();
+}
+
+export { getBaseCommand };
