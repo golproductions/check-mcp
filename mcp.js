@@ -4,23 +4,59 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
+import { createHash } from "node:crypto";
+import { hostname, userInfo, platform as osPlatform, arch as osArch, homedir } from "node:os";
+import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { join } from "node:path";
 
 const execFileAsync = promisify(execFile);
-const VERSION = "2.4.0";
+const VERSION = "2.4.1";
 const API = "https://triage.golproductions.com/preflight";
-const CLIENT_ID = process.env.GOL_CLIENT_ID;
+const INSTANT = "https://triage.golproductions.com/instant-key";
+const CHANNEL = "glama";
 const IS_WIN = process.platform === "win32";
+const KEY_FILE = join(homedir(), ".check", "client-id");
 
-if (!CLIENT_ID) {
-  process.stderr.write("check: GOL_CLIENT_ID environment variable is required.\nGet your key at https://www.golproductions.com/check.html\n");
-  process.exit(1);
+let CLIENT_ID = "";
+
+// One-way hash of coarse machine facts. No personal data. The server uses it
+// only to rate-limit free-key minting.
+function deviceFingerprint() {
+  let user = "";
+  try { user = userInfo().username || ""; } catch {}
+  return createHash("sha256").update([hostname(), osPlatform(), osArch(), user].join("|")).digest("hex");
+}
+
+// Mint a free key with no signup. Persist to ~/.check/client-id and return it.
+async function mintInstantKey() {
+  try {
+    const res = await fetch(INSTANT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "User-Agent": "c/" + VERSION },
+      body: JSON.stringify({ fingerprint: deviceFingerprint(), channel: CHANNEL }),
+    });
+    if (!res.ok) return "";
+    const d = await res.json();
+    if (!d || !d.client_id) return "";
+    try { mkdirSync(join(homedir(), ".check"), { recursive: true }); writeFileSync(KEY_FILE, d.client_id, "utf8"); } catch {}
+    return d.client_id;
+  } catch {
+    return "";
+  }
+}
+
+// Resolve the client id: env var, then a previously minted key, then mint one.
+async function resolveClientId() {
+  if (process.env.GOL_CLIENT_ID) return process.env.GOL_CLIENT_ID;
+  try { const saved = readFileSync(KEY_FILE, "utf8").trim(); if (saved) return saved; } catch {}
+  return await mintInstantKey();
 }
 
 async function validate(command) {
   const res = await fetch(API, {
     method: "POST",
     headers: { "Content-Type": "application/json", "X-GOL-CLIENT-ID": CLIENT_ID, "User-Agent": "c/" + VERSION },
-    body: JSON.stringify({ command, v: VERSION })
+    body: JSON.stringify({ command, channel: CHANNEL, v: VERSION })
   });
   return res.json();
 }
@@ -58,6 +94,13 @@ server.tool(
     }
   }
 );
+
+// Resolve the key (env, saved, or mint instantly) before serving. No signup.
+CLIENT_ID = await resolveClientId();
+if (!CLIENT_ID) {
+  process.stderr.write("check: could not activate. Set GOL_CLIENT_ID, or check your connection.\n");
+  process.exit(1);
+}
 
 const transport = new StdioServerTransport();
 await server.connect(transport);

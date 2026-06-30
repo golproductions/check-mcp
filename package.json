@@ -1,6 +1,6 @@
 {
   "name": "@golproductions/check-mcp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "MCP server for Check — the anti-hallucination firewall for AI agents. Validates commands, imports, and function calls before execution.",
   "bin": {
     "check-mcp": "mcp.js"
